@@ -4,7 +4,7 @@ import (
 	UserRepository "github.com/AltheaIX/UMMJacket/internal/domain/user/repository"
 )
 
-type UserService interface {
+type UserServices interface {
 	IUserServices
 }
 
@@ -12,6 +12,6 @@ type UserServiceImpl struct {
 	userRepo UserRepository.UserRepository
 }
 
-func NewUserService(userRepo UserRepository.UserRepository) UserService {
+func NewUserService(userRepo UserRepository.UserRepository) UserServices {
 	return &UserServiceImpl{userRepo: userRepo}
 }

@@ -14,7 +14,7 @@ import (
 
 func TestLogin(t *testing.T) {
 	cfg := configs.GetConfig()
-	db, _ := infras.InitPostgres(cfg)
+	db, _ := infras.InitMysql(cfg)
 	defer db.Close()
 
 	userRepo := repository.NewUserRepository(db)
@@ -28,7 +28,7 @@ func TestLogin(t *testing.T) {
 
 func TestAuthenticateToken(t *testing.T) {
 	cfg := configs.GetConfig()
-	db, _ := infras.InitPostgres(cfg)
+	db, _ := infras.InitMysql(cfg)
 	defer db.Close()
 
 	userRepo := repository.NewUserRepository(db)

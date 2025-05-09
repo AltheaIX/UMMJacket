@@ -34,3 +34,8 @@ func TestJsonFilterPayload(t *testing.T) {
 	t.Log(query)
 	t.Log(params)
 }
+
+func TestGetMultipleTableCounts(t *testing.T) {
+	query := filter.GetMultipleTableCounts([]string{"users", "transactions"})
+	t.Log(query)
+}

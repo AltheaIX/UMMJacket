@@ -6,6 +6,8 @@ import (
 	"github.com/AltheaIX/UMMJacket/infras"
 	AuthRepository "github.com/AltheaIX/UMMJacket/internal/domain/auth/repository"
 	AuthServices "github.com/AltheaIX/UMMJacket/internal/domain/auth/service"
+	StatisticRepo "github.com/AltheaIX/UMMJacket/internal/domain/statistic/repository"
+	StatisticServices "github.com/AltheaIX/UMMJacket/internal/domain/statistic/service"
 	UserRepository "github.com/AltheaIX/UMMJacket/internal/domain/user/repository"
 	UserServices "github.com/AltheaIX/UMMJacket/internal/domain/user/service"
 	"github.com/AltheaIX/UMMJacket/shared"
@@ -19,21 +21,23 @@ func main() {
 	cfg := configs.GetConfig()
 	shared.InitLogger()
 
-	db, err := infras.InitPostgres(cfg)
+	db, err := infras.InitMysql(cfg)
 	if err != nil {
-		log.Fatal().Err(err).Msg("[InitPostgres] Failed initializing postgres")
+		log.Fatal().Err(err).Msg("[InitMysql] Failed initializing postgres")
 	}
 
-	log.Trace().Msg("[InitPostgres] Postgres Initialized")
+	log.Trace().Msg("[InitMysql] Mysql Initialized")
 
 	userRepo := UserRepository.NewUserRepository(db)
 	authRepo := AuthRepository.NewAuthRepository(cfg)
+	statisticRepo := StatisticRepo.NewStatisticRepository(db)
 
 	userService := UserServices.NewUserService(userRepo)
 	authService := AuthServices.NewAuthServices(authRepo, userService)
+	statisticService := StatisticServices.NewStatisticService(statisticRepo)
 
 	authMiddleware := AuthMiddleware.NewAuthMiddleware(authService)
 
-	http := transport.NewHttp(cfg, authMiddleware, userService, authService)
+	http := transport.NewHttp(cfg, authMiddleware, userService, authService, statisticService)
 	http.SetupAndServe()
 }

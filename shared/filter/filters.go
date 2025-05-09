@@ -21,7 +21,6 @@ const (
 
 func BuildFilterAnd(filters []Filter, table string) (string, []interface{}, error) {
 	var query string
-	var i = 1
 
 	var params []interface{}
 
@@ -34,7 +33,7 @@ func BuildFilterAnd(filters []Filter, table string) (string, []interface{}, erro
 
 		switch filter.Operator {
 		case OperatorEQ:
-			query += fmt.Sprintf("%s = $%d", filter.Field, i)
+			query += fmt.Sprintf("%s = ?", filter.Field)
 		default:
 			return "", nil, errors.New("invalid filter operator")
 		}
@@ -44,8 +43,25 @@ func BuildFilterAnd(filters []Filter, table string) (string, []interface{}, erro
 		}
 
 		params = append(params, filter.Value)
-		i += 1
 	}
 
 	return query, params, nil
+}
+
+func GetMultipleTableCounts(tableName []string) string {
+	var query string
+
+	query += "SELECT "
+
+	for idx, table := range tableName {
+		query += fmt.Sprintf("(SELECT COUNT(*) FROM %s) as %s_count", table, table)
+		if idx != len(tableName)-1 {
+			query += ", "
+			continue
+		}
+
+		query += ";"
+	}
+
+	return query
 }

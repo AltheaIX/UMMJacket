@@ -3,6 +3,7 @@ package transport
 import (
 	"github.com/AltheaIX/UMMJacket/configs"
 	AuthServices "github.com/AltheaIX/UMMJacket/internal/domain/auth/service"
+	StatisticServices "github.com/AltheaIX/UMMJacket/internal/domain/statistic/service"
 	UserServices "github.com/AltheaIX/UMMJacket/internal/domain/user/service"
 	"github.com/AltheaIX/UMMJacket/internal/handlers"
 	AuthMiddleware "github.com/AltheaIX/UMMJacket/transport/middleware"
@@ -18,12 +19,25 @@ type HTTP struct {
 	cfg            *configs.Config
 	authMiddleware AuthMiddleware.AuthMiddleware
 
-	userService UserServices.UserService
-	authService AuthServices.AuthServices
+	userService      UserServices.UserServices
+	authService      AuthServices.AuthServices
+	statisticService StatisticServices.StatisticServices
 }
 
-func NewHttp(cfg *configs.Config, authMiddleware AuthMiddleware.AuthMiddleware, userService UserServices.UserService, authServices AuthServices.AuthServices) *HTTP {
-	return &HTTP{cfg: cfg, authMiddleware: authMiddleware, userService: userService, authService: authServices}
+func NewHttp(
+	cfg *configs.Config,
+	authMiddleware AuthMiddleware.AuthMiddleware,
+	userService UserServices.UserServices,
+	authServices AuthServices.AuthServices,
+	statisticServices StatisticServices.StatisticServices,
+) *HTTP {
+	return &HTTP{
+		cfg:              cfg,
+		authMiddleware:   authMiddleware,
+		userService:      userService,
+		authService:      authServices,
+		statisticService: statisticServices,
+	}
 }
 
 func (h *HTTP) SetupAndServe() {
@@ -32,7 +46,7 @@ func (h *HTTP) SetupAndServe() {
 	r.Use(ginzerolog.Logger("gin"), gin.Recovery())
 	v1 := r.Group("/v1")
 	{
-		handler := handlers.NewHandlers(h.authMiddleware, h.userService, h.authService)
+		handler := handlers.NewHandlers(h.authMiddleware, h.userService, h.authService, h.statisticService)
 		handler.RouterV1(v1)
 	}
 
@@ -44,5 +58,8 @@ func (h *HTTP) SetupAndServe() {
 		}
 	}()
 
-	r.Run(":" + h.cfg.Server.Port)
+	err := r.Run(":" + h.cfg.Server.Port)
+	if err != nil {
+		log.Fatal().Err(err).Msg("[SetupAndServe] failed to start")
+	}
 }

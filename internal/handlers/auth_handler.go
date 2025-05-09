@@ -13,7 +13,7 @@ import (
 
 // Login godoc
 // @Summary      Login Endpoint
-// @Description  Api for Login
+// @Description  Endpoint for Login
 // @Tags         Auth
 // @Accept       json
 // @Produce      json
@@ -59,7 +59,7 @@ func (h *Handlers) Login(c *gin.Context) {
 
 // Refresh godoc
 // @Summary      Refresh Endpoint
-// @Description  Api for Refresh Token
+// @Description  Endpoint for Refresh Token
 // @Tags         Auth
 // @Accept       json
 // @Produce      json
@@ -86,7 +86,7 @@ func (h *Handlers) Refresh(c *gin.Context) {
 
 // CurrentUser godoc
 // @Summary      Current User Endpoint
-// @Description  Api for Getting Current User
+// @Description  Endpoint for Getting Current User
 // @Tags         Auth
 // @Accept       json
 // @Produce      json

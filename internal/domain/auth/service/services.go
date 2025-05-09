@@ -15,10 +15,10 @@ type AuthServices interface {
 
 type AuthServicesImpl struct {
 	authRepo    AuthRepository.AuthRepository
-	userService UserServices.UserService
+	userService UserServices.UserServices
 }
 
-func NewAuthServices(authRepo AuthRepository.AuthRepository, userService UserServices.UserService) AuthServices {
+func NewAuthServices(authRepo AuthRepository.AuthRepository, userService UserServices.UserServices) AuthServices {
 	return &AuthServicesImpl{authRepo: authRepo, userService: userService}
 }
 
