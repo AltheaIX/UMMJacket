@@ -5,8 +5,24 @@ import (
 	"fmt"
 )
 
+type Pagination struct {
+	Page     int `json:"page"`
+	PageSize int `json:"page_size"`
+}
+
+const (
+	OperatorEQ = "eq"
+)
+
+type Sort struct {
+	Field string `json:"field"`
+	Order string `json:"order"`
+}
+
 type Filters struct {
-	Filter []Filter `json:"filters"`
+	Filter     []Filter   `json:"filters"`
+	Pagination Pagination `json:"pagination"`
+	Sort       Sort       `json:"sort"`
 }
 
 type Filter struct {
@@ -15,16 +31,50 @@ type Filter struct {
 	Value    interface{} `json:"value"`
 }
 
-const (
-	OperatorEQ = "eq"
-)
+func (p *Pagination) SettleValue() {
+	if p.Page == 0 {
+		p.Page = 1
+	}
 
-func BuildFilterAnd(filters []Filter, table string) (string, []interface{}, error) {
+	if p.PageSize == 0 {
+		p.PageSize = 10
+	}
+}
+
+func BuildFilter(filters *Filters, tableName string) (string, []interface{}, error) {
+	var query string
+	var params []interface{}
+	query += "SELECT * FROM " + tableName
+
+	if filters.Filter != nil {
+		queryAnd, paramsAnd, err := BuildFilterAnd(filters.Filter)
+		if err != nil {
+			return "", nil, err
+		}
+
+		params = append(params, paramsAnd...)
+		query += queryAnd
+	}
+
+	if filters.Sort.Field != "" && filters.Sort.Order != "" {
+		query += " ORDER BY " + filters.Sort.Field + " " + filters.Sort.Order
+	}
+
+	filters.Pagination.SettleValue()
+
+	query += fmt.Sprintf(
+		" LIMIT %d OFFSET %d",
+		filters.Pagination.PageSize,
+		(filters.Pagination.Page-1)*filters.Pagination.PageSize,
+	)
+
+	return query, params, nil
+}
+
+func BuildFilterAnd(filters []Filter) (string, []interface{}, error) {
 	var query string
 
 	var params []interface{}
-
-	query += "SELECT * FROM " + table
 
 	for filterIndex, filter := range filters {
 		if filter.Field != "" && filterIndex == 0 {

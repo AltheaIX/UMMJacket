@@ -9,6 +9,7 @@ type ApiResponse struct {
 	StatusCode int         `json:"statusCode,omitempty"`
 	Data       interface{} `json:"data,omitempty"`
 	Error      string      `json:"error,omitempty"`
+	Metadata   interface{} `json:"metadata,omitempty"`
 }
 
 func JSON(ctx *gin.Context, code int, data interface{}) {

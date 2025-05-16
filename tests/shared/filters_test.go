@@ -7,17 +7,26 @@ import (
 )
 
 func TestJsonFilterPayload(t *testing.T) {
-	var filters filter.Filters
+	var filters *filter.Filters
 
 	rawJson := []byte(`{
-	  "filters": [
+	 "filters": [
 		{
 		  "field": "nim",
 		  "operator": "eq",
 		  "value": "test"
 		}
-	  ]
+	 ],
+	 "pagination": {
+	    "page": 1
+	 },
+	 "sort": {
+		"field": "id",
+		"order": "ASC"
+	 }
 	}`)
+
+	//rawJson := []byte(`{}`)
 
 	err := json.Unmarshal(rawJson, &filters)
 	if err != nil {
@@ -26,7 +35,7 @@ func TestJsonFilterPayload(t *testing.T) {
 
 	t.Log(filters.Filter)
 
-	query, params, err := filter.BuildFilterAnd(filters.Filter, "users")
+	query, params, err := filter.BuildFilter(filters, "users")
 	if err != nil {
 		t.Fatal(err)
 	}
