@@ -12,7 +12,7 @@ type IUserServices interface {
 	GetUserService(ctx context.Context, filters *filter.Filters) (*model.User, error)
 }
 
-func (r *UserServiceImpl) GetUsersService(ctx context.Context, filters *filter.Filters) ([]model.User, error) {
+func (r *UserServicesImpl) GetUsersService(ctx context.Context, filters *filter.Filters) ([]model.User, error) {
 	data, err := r.userRepo.ResolveUsersRepository(ctx, filters)
 	if err != nil {
 		log.Error().Err(err).Msg("[GetUsersService][ResolveUsersRepository] ")
@@ -22,7 +22,7 @@ func (r *UserServiceImpl) GetUsersService(ctx context.Context, filters *filter.F
 	return data, nil
 }
 
-func (r *UserServiceImpl) GetUserService(ctx context.Context, filters *filter.Filters) (*model.User, error) {
+func (r *UserServicesImpl) GetUserService(ctx context.Context, filters *filter.Filters) (*model.User, error) {
 	data, err := r.userRepo.ResolveUsersRepository(ctx, filters)
 	if err != nil {
 		log.Error().Err(err).Msg("[GetUserService][ResolveUsersRepository] ")

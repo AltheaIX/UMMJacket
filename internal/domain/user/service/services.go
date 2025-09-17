@@ -8,10 +8,10 @@ type UserServices interface {
 	IUserServices
 }
 
-type UserServiceImpl struct {
+type UserServicesImpl struct {
 	userRepo UserRepository.UserRepository
 }
 
-func NewUserService(userRepo UserRepository.UserRepository) UserServices {
-	return &UserServiceImpl{userRepo: userRepo}
+func NewUserServices(userRepo UserRepository.UserRepository) UserServices {
+	return &UserServicesImpl{userRepo: userRepo}
 }

@@ -37,14 +37,14 @@ func (p *Pagination) SettleValue() {
 	}
 
 	if p.PageSize == 0 {
-		p.PageSize = 10
+		p.PageSize = 5
 	}
 }
 
 func BuildFilter(filters *Filters, tableName string) (string, []interface{}, error) {
 	var query string
 	var params []interface{}
-	query += "SELECT * FROM " + tableName
+	query += fmt.Sprintf("SELECT (SELECT COUNT(*) FROM %s) AS total_data, t.* FROM %s t", tableName, tableName)
 
 	if filters.Filter != nil {
 		queryAnd, paramsAnd, err := BuildFilterAnd(filters.Filter)

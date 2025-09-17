@@ -6,10 +6,10 @@ type StatisticServices interface {
 	IDashboardServices
 }
 
-type StatisticServiceImpl struct {
+type StatisticServicesImpl struct {
 	statisticRepo StatisticRepo.StatisticRepository
 }
 
-func NewStatisticService(statisticRepo StatisticRepo.StatisticRepository) StatisticServices {
-	return &StatisticServiceImpl{statisticRepo: statisticRepo}
+func NewStatisticServices(statisticRepo StatisticRepo.StatisticRepository) StatisticServices {
+	return &StatisticServicesImpl{statisticRepo: statisticRepo}
 }

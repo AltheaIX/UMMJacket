@@ -1,6 +1,7 @@
 package model
 
 type User struct {
+	TotalData int    `db:"total_data" json:"-"`
 	Id        int    `db:"id"  json:"id"`
 	Nim       string `db:"nim" json:"nim"`
 	Password  string `db:"password" json:"password"`

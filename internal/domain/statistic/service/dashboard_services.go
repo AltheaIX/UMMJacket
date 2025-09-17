@@ -10,7 +10,7 @@ type IDashboardServices interface {
 	GetDashboardCount(ctx context.Context) (model.Statistic, error)
 }
 
-func (s *StatisticServiceImpl) GetDashboardCount(ctx context.Context) (model.Statistic, error) {
+func (s *StatisticServicesImpl) GetDashboardCount(ctx context.Context) (model.Statistic, error) {
 	statistic, err := s.statisticRepo.GetDashboardCounts(ctx)
 	if err != nil {
 		log.Error().Err(err).Msg("[GetDashboardCount][GetDashboardCounts]")

@@ -25,7 +25,7 @@ func TestGetUsers(t *testing.T) {
 	//	},
 	//}
 	//
-	//filters := filter.Filters{Filter: groupFilter}
+	//filters := filter.FiltersJacket{Filter: groupFilter}
 
 	data, err := userRepo.ResolveUsersRepository(context.Background(), &filter.Filters{})
 	if err != nil {

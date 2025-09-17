@@ -6,8 +6,12 @@ import (
 	"github.com/AltheaIX/UMMJacket/infras"
 	AuthRepository "github.com/AltheaIX/UMMJacket/internal/domain/auth/repository"
 	AuthServices "github.com/AltheaIX/UMMJacket/internal/domain/auth/service"
+	JacketsRepository "github.com/AltheaIX/UMMJacket/internal/domain/jackets/repository"
+	JacketsServices "github.com/AltheaIX/UMMJacket/internal/domain/jackets/service"
 	StatisticRepo "github.com/AltheaIX/UMMJacket/internal/domain/statistic/repository"
 	StatisticServices "github.com/AltheaIX/UMMJacket/internal/domain/statistic/service"
+	TransactionRepository "github.com/AltheaIX/UMMJacket/internal/domain/transaction/repository"
+	TransactionServices "github.com/AltheaIX/UMMJacket/internal/domain/transaction/service"
 	UserRepository "github.com/AltheaIX/UMMJacket/internal/domain/user/repository"
 	UserServices "github.com/AltheaIX/UMMJacket/internal/domain/user/service"
 	"github.com/AltheaIX/UMMJacket/shared"
@@ -31,13 +35,25 @@ func main() {
 	userRepo := UserRepository.NewUserRepository(db)
 	authRepo := AuthRepository.NewAuthRepository(cfg)
 	statisticRepo := StatisticRepo.NewStatisticRepository(db)
+	jacketsRepo := JacketsRepository.NewJacketRepository(db)
+	transactionRepo := TransactionRepository.NewTransactionRepositoryImpl(db)
 
-	userService := UserServices.NewUserService(userRepo)
+	userService := UserServices.NewUserServices(userRepo)
 	authService := AuthServices.NewAuthServices(authRepo, userService)
-	statisticService := StatisticServices.NewStatisticService(statisticRepo)
+	statisticService := StatisticServices.NewStatisticServices(statisticRepo)
+	jacketsService := JacketsServices.NewJacketsServices(jacketsRepo)
+	transactionService := TransactionServices.NewTransactionServices(transactionRepo)
 
 	authMiddleware := AuthMiddleware.NewAuthMiddleware(authService)
 
-	http := transport.NewHttp(cfg, authMiddleware, userService, authService, statisticService)
+	http := transport.NewHttp(
+		cfg,
+		authMiddleware,
+		userService,
+		authService,
+		statisticService,
+		jacketsService,
+		transactionService,
+	)
 	http.SetupAndServe()
 }
